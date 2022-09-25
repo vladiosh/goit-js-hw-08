@@ -6,10 +6,15 @@ initPage();
 
 const onFormInput = evt => {
   const { name, value } = evt.target;
-  formData[name] = value;
-
   try {
-    const stringifyData = JSON.stringify(formData);
+    let saveData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (saveData) {
+      saveData = JSON.parse(saveData);
+    } else {
+      saveData = {};
+    }
+    saveData[name] = value;
+    const stringifyData = JSON.stringify(saveData);
     localStorage.setItem(LOCAL_STORAGE_KEY, stringifyData);
   } catch (error) {
     console.log(error);
@@ -25,9 +30,8 @@ function initPage() {
   }
   try {
     const parceData = JSON.parse(saveData);
-
-    Object.entries(parceData).forEach(item => {
-      console.log(item);
+    Object.entries(parceData).forEach(([name, value]) => {
+      formRef.elements[name].value = value;
     });
   } catch (error) {
     console.log(error);
